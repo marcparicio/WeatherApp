@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="weather_title_hint">Enter the city name</string>
+    <string name="location_name_label">City</string>
+    <string name="location_time_label">Time</string>
+    <string name="location_dialog_title">Choose a location:</string>
+    <string name="new_location">New Location</string>
+    <string name="suggest_location">Insert the location name</string>
+    <string name="delete_location">Delete</string>
+    <string name="wi_day_sunny">&#xf00d;</string>
+    <string name="wi_day_cloudy">&#xf002;</string>
+    <string name="wi_day_rain">&#xf008;</string>
+    <string name="wi_thunderstorm">&#xf01e;</string>
+    <string name="wi_cloud">&#xf041;</string>
+    <string name="wi_cloudy">&#xf013;</string>
+    <string name="wi_fog">&#xf014;</string>
+    <string name="wi_rain">&#xf019;</string>
+    <string name="wi_snow">&#xf01b;</string>
+    <string name="wi_strong_wind">&#xf050;</string>
+    <string name="wi_alien">&#xf075;</string>
+</resources>

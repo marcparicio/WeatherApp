@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="google_geo_key">AAAAAAAAAA</string>
+    <string name="openweather_key">BBBBBBBBBB</string>
+    <string name="time_zone_key">CCCCCCCCCC</string>
+
+</resources>

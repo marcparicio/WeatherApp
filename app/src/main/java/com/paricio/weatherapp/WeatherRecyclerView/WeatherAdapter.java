@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.paricio.weatherapp.ItemTouchHelper.ItemTouchHelperAdapter;
 import com.paricio.weatherapp.Model.Location;
@@ -46,11 +47,16 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherHolder> implemen
     }
 
     public void addItem(Location location) {
-        locations.add(location);
-        notifyItemInserted(getItemCount());
-        notifyDataSetChanged();
-        fragment.insertLocation(location);
-
+        if (locationExists(location)) {
+            Toast.makeText(fragment.getActivity(), R.string.location_already_exists, Toast.LENGTH_SHORT).show();
+        }
+        else {
+            locations.add(location);
+            notifyItemInserted(getItemCount());
+            notifyDataSetChanged();
+            fragment.insertLocation(location);
+            Toast.makeText(fragment.getActivity(), R.string.location_added, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void updateLocationsList(List<Location> locations) {
@@ -66,6 +72,13 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherHolder> implemen
         notifyDataSetChanged();
         fragment.deleteLocation(location);
 
+    }
+
+    private boolean locationExists (Location newLocation) {
+        for (Location location : locations) {
+            if (location.getId().equals(newLocation.getId())) return true;
+        }
+        return false;
     }
 }
 

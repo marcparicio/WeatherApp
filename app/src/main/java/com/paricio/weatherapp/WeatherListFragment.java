@@ -9,8 +9,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.constraint.solver.SolverVariable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -31,20 +31,14 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.paricio.weatherapp.ItemTouchHelper.SimpleItemTouchHelperCallback;
 import com.paricio.weatherapp.Model.Location;
 import com.paricio.weatherapp.Model.OpenWeatherOffset;
+import com.paricio.weatherapp.RoomDB.AppDatabase;
 import com.paricio.weatherapp.Services.OpenWeatherAPIAdapter;
 import com.paricio.weatherapp.Services.TimeZoneAPIAdapter;
 import com.paricio.weatherapp.WeatherRecyclerView.WeatherAdapter;
 
-import java.lang.reflect.Type;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -85,7 +79,13 @@ public class WeatherListFragment extends Fragment {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_weather_list, container, false);
         unbinder = ButterKnife.bind(this, view);
-        weatherRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        weatherRecyclerView.setLayoutManager(linearLayoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                weatherRecyclerView.getContext(),
+                linearLayoutManager.getOrientation()
+        );
+        weatherRecyclerView.addItemDecoration(dividerItemDecoration);
         setupUI();
 
         return view;

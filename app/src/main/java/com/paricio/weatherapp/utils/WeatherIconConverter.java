@@ -1,11 +1,13 @@
-package com.paricio.weatherapp;
+package com.paricio.weatherapp.utils;
 
 
 import android.content.res.Resources;
 
-public class WeatherIconTranslator {
+import com.paricio.weatherapp.R;
 
-    public static String translate(String iconCode, Resources res) {
+public class WeatherIconConverter {
+
+    public static String fromCodeToIcon(String iconCode, Resources res) {
         char group = iconCode.charAt(0);
 
         switch (group) {

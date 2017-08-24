@@ -1,4 +1,4 @@
-package com.paricio.weatherapp;
+package com.paricio.weatherapp.RoomDB;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;

@@ -16,6 +16,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.paricio.weatherapp.Model.Location;
 import com.paricio.weatherapp.Model.OpenWeatherOffset;
+import com.paricio.weatherapp.RoomDB.AppDatabase;
+import com.paricio.weatherapp.RoomDB.LocationDAO;
 import com.paricio.weatherapp.Services.OpenWeatherAPIAdapter;
 
 import java.util.List;

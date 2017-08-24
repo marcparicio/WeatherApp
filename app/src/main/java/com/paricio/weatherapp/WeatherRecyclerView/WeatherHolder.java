@@ -1,7 +1,6 @@
 package com.paricio.weatherapp.WeatherRecyclerView;
 
 
-import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +10,7 @@ import android.widget.TextView;
 
 import com.paricio.weatherapp.Model.Location;
 import com.paricio.weatherapp.R;
-import com.paricio.weatherapp.WeatherIconTranslator;
+import com.paricio.weatherapp.utils.WeatherIconConverter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,7 +25,6 @@ public class WeatherHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.list_item_weather_temperature) TextView temperatureTextView;
     @BindView(R.id.list_item_weather_icon) TextView iconTextView;
     public View view;
-    private Typeface weatherFont;
 
     public WeatherHolder(View itemView, Typeface weatherFont) {
         super(itemView);
@@ -39,9 +37,8 @@ public class WeatherHolder extends RecyclerView.ViewHolder {
         cityNameTextView.setText(location.getName());
         timeTextView.setTimeZone(location.getTimezone());
         temperatureTextView.setText(location.getTemperature() + " °C");
-
         Resources res = view.getResources();
-        iconTextView.setText(WeatherIconTranslator.translate(location.getIconId(), res));
+        iconTextView.setText(WeatherIconConverter.fromCodeToIcon(location.getIconId(), res));
     }
 }
 

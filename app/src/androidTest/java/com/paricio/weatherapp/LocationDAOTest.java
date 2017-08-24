@@ -7,6 +7,8 @@ import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.paricio.weatherapp.Model.Location;
+import com.paricio.weatherapp.RoomDB.AppDatabase;
+import com.paricio.weatherapp.RoomDB.LocationDAO;
 
 import org.junit.After;
 

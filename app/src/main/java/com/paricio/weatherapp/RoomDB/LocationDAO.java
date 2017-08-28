@@ -17,9 +17,6 @@ public interface LocationDAO {
     @Query("Select * FROM location")
     List<Location> getAll();
 
-    @Query("Select * FROM location WHERE id LIKE :locationId")
-    Location getLocation(String locationId);
-
     @Insert
     void insertLocation(Location... locations);
 

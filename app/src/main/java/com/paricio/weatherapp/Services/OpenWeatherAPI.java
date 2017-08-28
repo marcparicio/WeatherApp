@@ -14,4 +14,8 @@ public interface OpenWeatherAPI {
     Call<JsonObject> getLocation(@Query("lat") String lat, @Query("lon") String lon,
                                    @Query("units") String units, @Query("appid") String appid);
 
+    @GET("/data/2.5/forecast")
+    Call<JsonObject> getForecast(@Query("lat") String lat, @Query("lon") String lon,
+                                    @Query("units") String units, @Query("appid") String appid);
+
 }

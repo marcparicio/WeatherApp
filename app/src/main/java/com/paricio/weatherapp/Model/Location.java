@@ -22,6 +22,16 @@ public class Location {
     private String temperature;
     @ColumnInfo
     private String iconId;
+    @ColumnInfo
+    private String description;
+    @ColumnInfo
+    private String humidity;
+    @ColumnInfo
+    private String presure;
+    @ColumnInfo
+    private String minTemp;
+    @ColumnInfo
+    private String maxTemp;
 
     public String getId() {
         return id;
@@ -79,5 +89,44 @@ public class Location {
         this.iconId = iconId;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(String humidity) {
+        this.humidity = humidity;
+    }
+
+    public String getPresure() {
+        return presure;
+    }
+
+    public void setPresure(String presure) {
+        this.presure = presure;
+    }
+
+    public String getMinTemp() {
+        return minTemp;
+    }
+
+    public void setMinTemp(String minTemp) {
+        this.minTemp = minTemp;
+    }
+
+    public String getMaxTemp() {
+        return maxTemp;
+    }
+
+    public void setMaxTemp(String maxTemp) {
+        this.maxTemp = maxTemp;
+    }
 }
 

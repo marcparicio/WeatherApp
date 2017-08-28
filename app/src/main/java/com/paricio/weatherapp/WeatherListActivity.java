@@ -7,6 +7,4 @@ public class WeatherListActivity extends BaseActivity {
 
     protected Fragment createFragment() { return new WeatherListFragment(); }
 
-
-
 }

@@ -28,16 +28,13 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.paricio.weatherapp.ItemTouchHelper.SimpleItemTouchHelperCallback;
 import com.paricio.weatherapp.Model.Location;
-import com.paricio.weatherapp.Model.OpenWeatherOffset;
+import com.paricio.weatherapp.Services.WeatherDataDownloader;
 import com.paricio.weatherapp.RoomDB.AppDatabase;
-import com.paricio.weatherapp.Services.OpenWeatherAPIAdapter;
-import com.paricio.weatherapp.Services.TimeZoneAPIAdapter;
+import com.paricio.weatherapp.WeatherRecyclerView.OnItemClickListener;
 import com.paricio.weatherapp.WeatherRecyclerView.WeatherAdapter;
+import com.paricio.weatherapp.WeatherRecyclerView.WeatherItemClickListener;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -45,9 +42,6 @@ import java.util.concurrent.ExecutionException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -67,10 +61,19 @@ public class WeatherListFragment extends Fragment {
     private WeatherAdapter weatherAdapter;
     private AppDatabase database;
     private ServiceToActivity serviceReceiver;
+    private WeatherDataDownloader dataDownloader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dataDownloader = new WeatherDataDownloader();
+        dataDownloader.setDataDownloadListener(new WeatherDataDownloader.DataDownloadListener() {
+            @Override
+            public void onWeatherDataDownloaded(Location location) {
+                weatherAdapter.addItem(location);
+            }
+        });
+        Log.i(TAG, "Background thread started");
     }
 
     @Override
@@ -79,13 +82,6 @@ public class WeatherListFragment extends Fragment {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_weather_list, container, false);
         unbinder = ButterKnife.bind(this, view);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        weatherRecyclerView.setLayoutManager(linearLayoutManager);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                weatherRecyclerView.getContext(),
-                linearLayoutManager.getOrientation()
-        );
-        weatherRecyclerView.addItemDecoration(dividerItemDecoration);
         setupUI();
 
         return view;
@@ -115,14 +111,14 @@ public class WeatherListFragment extends Fragment {
                 if (weatherAdapter.getItemCount() >= 10) Toast.makeText(getActivity(),LIST_IS_FULL,Toast.LENGTH_SHORT);
                 else {
                     Place place = PlaceAutocomplete.getPlace(getActivity(), data);
-                    createLocationFromPlace(place);
+                    dataDownloader.newLocationDownload(place,getContext());
                 }
 
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(getActivity(), data);
                 Log.i(ContentValues.TAG, status.getStatusMessage());
             } else if (requestCode == RESULT_CANCELED) {
-
+                Log.i(TAG, "PlaceAutocomplete canceled");
             }
         }
     }
@@ -140,7 +136,34 @@ public class WeatherListFragment extends Fragment {
         getActivity().unregisterReceiver(serviceReceiver);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "Background thread stopped");
+    }
+
     private void setupUI() {
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        weatherRecyclerView.setLayoutManager(linearLayoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                weatherRecyclerView.getContext(),
+                linearLayoutManager.getOrientation()
+        );
+        weatherRecyclerView.addItemDecoration(dividerItemDecoration);
+        weatherRecyclerView.addOnItemTouchListener(
+                new WeatherItemClickListener(getActivity(), weatherRecyclerView ,new OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        Location locationClicked = weatherAdapter.getLocationAtPosition(position);
+                        Intent intent = WeatherActivity.newIntent(getActivity(),locationClicked);
+                        startActivity(intent);
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        Toast.makeText(getActivity(), "onLongClick", Toast.LENGTH_SHORT).show();
+                    }
+                })
+        );
 
         List<Location> locations = null;
         try {
@@ -197,7 +220,6 @@ public class WeatherListFragment extends Fragment {
         }
     }
 
-    //TODO refactor: database tasks (asynctasks) + api calls
     public class GetAllLocationsTask extends AsyncTask<Void,Void,List<Location>> {
 
         @Override
@@ -207,128 +229,23 @@ public class WeatherListFragment extends Fragment {
 
     }
 
-    public class InsertLocationTask extends AsyncTask<Location,Void,Void> {
-
-        @Override
-        protected Void doInBackground(Location... locations) {
-            database.locationDAO().insertLocation(locations);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-
-        }
-
-    }
-
-
-    public class DeleteLocationTask extends AsyncTask<Location,Void,Void> {
-
-        @Override
-        protected Void doInBackground(Location... locations) {
-            database.locationDAO().deleteLocation(locations);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-
-        }
-
-    }
-
-    private void createLocationFromPlace(final Place locationPlace) {
-
-        TimeZoneAPIAdapter timeZoneAPIAdapter = new TimeZoneAPIAdapter();
-
-        Call<JsonObject> call = timeZoneAPIAdapter.getServiceCall(locationPlace, getContext());
-        call.enqueue(new Callback<JsonObject>() {
+    public void insertLocation(final Location location) {
+        Thread insertThread = new Thread() {
             @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (!response.isSuccessful()) {
-                    Log.i(TAG, "No Success");
-                }
-
-                Gson gson = new Gson();
-                String zoneId = gson.fromJson(response.body(),TimeZoneOffset.class).getTimeZoneId();
-
-                LatLng placeCoords = locationPlace.getLatLng();
-                String latitude = String.valueOf(placeCoords.latitude);
-                String longitude = String.valueOf(placeCoords.longitude);
-
-                Location location = new Location();
-                location.setId(locationPlace.getId());
-                location.setName(locationPlace.getName().toString());
-                location.setTimezone(zoneId);
-                location.setLatitude(latitude);
-                location.setLongitude(longitude);
-
-                createLocationWithWeather(location);
+            public void run() {
+                database.locationDAO().insertLocation(location);
             }
+        };
+        insertThread.start();
+    }
 
+    public void deleteLocation(final Location location) {
+        Thread deleteThread = new Thread() {
             @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                t.printStackTrace();
-                Log.i(TAG, "onFailure on service execution, createLocaiton");
+            public void run() {
+                database.locationDAO().deleteLocation(location);
             }
-        });
-
+        };
+        deleteThread.start();
     }
-
-    private void createLocationWithWeather(final Location location) {
-        final OpenWeatherAPIAdapter openWeatherAPIAdapter = new OpenWeatherAPIAdapter();
-
-        Call<JsonObject> call = openWeatherAPIAdapter.getServiceCall(location,this.getContext());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (!response.isSuccessful()) {
-                    Log.i(TAG, "No Success");
-                }
-
-                Gson gson = new Gson();
-                OpenWeatherOffset openWeatherOffset = gson.fromJson(response.body(),OpenWeatherOffset.class);
-
-                String iconId = openWeatherOffset.getIconId();
-                String temperature = openWeatherOffset.getTemperature();
-
-                Location newLocation = new Location();
-                newLocation.setId(location.getId());
-                newLocation.setName(location.getName());
-                newLocation.setLatitude(location.getLatitude());
-                newLocation.setLongitude(location.getLongitude());
-                newLocation.setTimezone(location.getTimezone());
-                newLocation.setTemperature(temperature);
-                newLocation.setIconId(iconId);
-
-                Log.i(TAG, newLocation.getName() + " , " + iconId + " , " + temperature);
-                weatherAdapter.addItem(newLocation);
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                t.printStackTrace();
-                Log.i(TAG, "onFailure on service execution, updateLocation");
-            }
-        });
-    }
-
-
-
-    private class TimeZoneOffset {
-        private String timeZoneId;
-        private String getTimeZoneId() { return timeZoneId; }
-    }
-
-    public void insertLocation(Location location) {
-        InsertLocationTask i = new InsertLocationTask();
-        i.execute(location);
-    }
-
-    public void deleteLocation(Location location) {
-        DeleteLocationTask d = new DeleteLocationTask();
-        d.execute(location);
-    }
-
 }

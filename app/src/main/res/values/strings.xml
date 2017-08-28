@@ -9,7 +9,11 @@
     <string name="delete_location">Delete</string>
     <string name="location_already_exists">The location already exists</string>
     <string name="location_added">New location added</string>
-
+    <string name="description">Description:</string>
+    <string name="pressure">Pressure:</string>
+    <string name="humidity">Humidity:</string>
+    <string name="min_temp">Minimum temp:</string>
+    <string name="max_temp">Maximum temp:</string>
     <string name="wi_day_sunny">&#xf00d;</string>
     <string name="wi_day_cloudy">&#xf002;</string>
     <string name="wi_day_rain">&#xf008;</string>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    style="@style/ViewHolderStyle"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/list_item_forecast_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
+
+    <TextView
+        android:id="@+id/list_item_forecast_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list_item_forecast_date"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:padding="4dp"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+    <TextView
+        android:id="@+id/list_item_forecast_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list_item_forecast_temperature"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:padding="4dp"
+        android:textSize="30dp" />
+
+
+
+
+</RelativeLayout>

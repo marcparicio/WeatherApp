@@ -19,12 +19,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
             android:padding="4dp"
-            android:text="weather_city_name"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textSize="24sp" />
 
-        <TextClock
-            android:id="@+id/weather_time"
+        <TextView
+            android:id="@+id/weather_day"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/weather_city_name"
@@ -42,7 +41,7 @@
         android:layout_below="@id/layout_name_and_time"
         android:orientation="horizontal"
         android:paddingTop="15dp"
-        android:paddingBotton="15dp">
+        android:paddingBottom="15dp">
 
         <TextView
             android:id="@+id/weather_temperature"
@@ -50,7 +49,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
             android:padding="4dp"
-            android:text="weather_temp"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
@@ -60,13 +58,12 @@
             android:layout_toRightOf="@id/weather_temperature"
             android:layout_weight="0.3"
             android:padding="4dp"
-            android:text="weather_icon"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
-            android:textSize="24sp" />
+            android:textSize="32dp" />
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/layout_weather_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -75,50 +72,98 @@
         android:padding="10dp">
 
         <TextView
-            android:id="@+id/weather_description"
+            android:id="@+id/label_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:text="description of the weather"
+            android:text="@string/description"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
+
+        <TextView
+            android:id="@+id/weather_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/label_description"
+            android:padding="5dp"
             android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+
+        <TextView
+            android:id="@+id/label_humidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_below="@id/label_description"
+            android:text="@string/humidity"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
 
         <TextView
             android:id="@+id/weather_humidity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/label_humidity"
+            android:layout_below="@id/label_description"
             android:padding="5dp"
-            android:text="humidity"
             android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+
+        <TextView
+            android:id="@+id/label_pressure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_below="@id/label_humidity"
+            android:text="@string/pressure"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
 
         <TextView
             android:id="@+id/weather_pressure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/label_pressure"
+            android:layout_below="@id/label_humidity"
             android:padding="5dp"
-            android:text="pressure"
             android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+
+        <TextView
+            android:id="@+id/label_min_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_below="@id/label_pressure"
+            android:text="@string/min_temp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
 
         <TextView
             android:id="@+id/weather_min_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/label_min_temp"
+            android:layout_below="@id/label_pressure"
             android:padding="5dp"
-            android:text="min_temp"
             android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+
+        <TextView
+            android:id="@+id/label_max_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/label_min_temp"
+            android:padding="5dp"
+            android:text="@string/max_temp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button"/>
 
         <TextView
             android:id="@+id/weather_max_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/label_max_temp"
+            android:layout_below="@id/label_min_temp"
             android:padding="5dp"
-            android:text="max_temp"
             android:textAppearance="@style/TextAppearance.AppCompat.Button" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/weather_recycler_view"
+        android:id="@+id/forecast_recycler_view"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         style="@style/RecyclerViewStyle"

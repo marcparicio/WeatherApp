@@ -80,5 +80,9 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherHolder> implemen
         }
         return false;
     }
+
+    public Location getLocationAtPosition(int position) {
+        return locations.get(position);
+    }
 }
 

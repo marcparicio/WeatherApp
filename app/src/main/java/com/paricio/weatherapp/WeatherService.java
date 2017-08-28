@@ -8,23 +8,14 @@ import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
-import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.paricio.weatherapp.Model.Location;
-import com.paricio.weatherapp.Model.OpenWeatherOffset;
 import com.paricio.weatherapp.RoomDB.AppDatabase;
 import com.paricio.weatherapp.RoomDB.LocationDAO;
-import com.paricio.weatherapp.Services.OpenWeatherAPIAdapter;
+import com.paricio.weatherapp.Services.WeatherDataDownloader;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class WeatherService extends IntentService{
     private static final String TAG = "WeatherService";
@@ -34,6 +25,7 @@ public class WeatherService extends IntentService{
     private static final String SERVICE_TO_ACTIVITY_KEY = "ServiceToActivityKey";
 
     private static AppDatabase database;
+    private WeatherDataDownloader dataDownloader;
 
     public static Intent newIntent(Context context) {
         return new Intent(context, WeatherService.class);
@@ -41,6 +33,13 @@ public class WeatherService extends IntentService{
 
     public WeatherService() {
         super(TAG);
+        dataDownloader = new WeatherDataDownloader();
+        dataDownloader.setDataDownloadListener(new WeatherDataDownloader.DataDownloadListener() {
+            @Override
+            public void onWeatherDataDownloaded(Location location) {
+                updateLocation(location);
+            }
+        });
     }
 
     @Override
@@ -56,7 +55,7 @@ public class WeatherService extends IntentService{
         if (locations.size() > 0) {
             for (Location location : locations) {
                 Log.i(TAG, "onHandleIntent to update " + location.getName() );
-                updateLocation(location);
+                dataDownloader.updateLocationDownload(location,getApplicationContext());
             }
             Log.i(TAG, "sendMessageToActivity");
 
@@ -64,46 +63,6 @@ public class WeatherService extends IntentService{
         }
         else sendMessageToActivity(DATA_NOT_UPDATED);
     }
-
-    private void updateLocation(final Location location) {
-        final OpenWeatherAPIAdapter openWeatherAPIAdapter = new OpenWeatherAPIAdapter();
-
-        Call<JsonObject> call = openWeatherAPIAdapter.getServiceCall(location, getApplicationContext());
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (!response.isSuccessful()) {
-                    Log.i(TAG, "No Success");
-                }
-                Log.i(TAG, "Updating " + location.getName() );
-
-                Gson gson = new Gson();
-                OpenWeatherOffset openWeatherOffset = gson.fromJson(response.body(),OpenWeatherOffset.class);
-
-                String iconId = openWeatherOffset.getIconId();
-                String temperature = openWeatherOffset.getTemperature();
-
-                Location updatedLocation = new Location();
-                updatedLocation.setId(location.getId());
-                updatedLocation.setName(location.getName());
-                updatedLocation.setLatitude(location.getLatitude());
-                updatedLocation.setLongitude(location.getLongitude());
-                updatedLocation.setTimezone(location.getTimezone());
-                updatedLocation.setTemperature(temperature);
-                updatedLocation.setIconId(iconId);
-
-                UpdateLocationTask updateLocationTask = new UpdateLocationTask();
-                updateLocationTask.execute(updatedLocation);
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                t.printStackTrace();
-                Log.i(TAG, "onFailure on service execution, updateLocation");
-            }
-        });
-    }
-
 
     private boolean isNetworkAvailebleAndConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
@@ -136,18 +95,13 @@ public class WeatherService extends IntentService{
         sendBroadcast(broadcastIntent);
     }
 
-    public class UpdateLocationTask extends AsyncTask<Location,Void,Void> {
-
-        @Override
-        protected Void doInBackground(Location... locations) {
-            database.locationDAO().updateLocation(locations);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-
-        }
-
+    public void updateLocation(final Location location) {
+        Thread updateThread = new Thread() {
+            @Override
+            public void run() {
+                database.locationDAO().updateLocation(location);
+            }
+        };
+        updateThread.start();
     }
 }

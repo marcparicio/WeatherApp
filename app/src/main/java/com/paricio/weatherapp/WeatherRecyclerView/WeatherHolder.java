@@ -22,8 +22,10 @@ public class WeatherHolder extends RecyclerView.ViewHolder {
     TextView cityNameTextView;
     @BindView(R.id.list_item_weather_time)
     TextClock timeTextView;
-    @BindView(R.id.list_item_weather_temperature) TextView temperatureTextView;
-    @BindView(R.id.list_item_weather_icon) TextView iconTextView;
+    @BindView(R.id.list_item_weather_temperature)
+    TextView temperatureTextView;
+    @BindView(R.id.list_item_weather_icon)
+    TextView iconTextView;
     public View view;
 
     public WeatherHolder(View itemView, Typeface weatherFont) {

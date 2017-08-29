@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.paricio.weatherapp.ForecastRecyclerView.ForecastAdapter;
 import com.paricio.weatherapp.Model.Forecast;
+import com.paricio.weatherapp.Model.ForecastDay;
 import com.paricio.weatherapp.Model.Location;
 import com.paricio.weatherapp.RoomDB.AppDatabase;
 import com.paricio.weatherapp.Services.ForecastDataDownloader;
@@ -26,9 +27,12 @@ import com.paricio.weatherapp.utils.OpenWeatherForecastOffset;
 import com.paricio.weatherapp.utils.WeatherIconConverter;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
@@ -77,13 +81,6 @@ public class WeatherFragment extends Fragment {
         dataDownloader.setDataDownloadListener(new ForecastDataDownloader.DataDownloadListener() {
             @Override
             public void onForecastDataDownloaded(Forecast forecast) {
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
-                forecastRecyclerView.setLayoutManager(linearLayoutManager);
-                DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                        forecastRecyclerView.getContext(),
-                        linearLayoutManager.getOrientation()
-                );
-                forecastRecyclerView.addItemDecoration(dividerItemDecoration);
                 forecastAdapter = new ForecastAdapter(forecast,WeatherFragment.this);
                 forecastRecyclerView.setAdapter(forecastAdapter);
             }
@@ -101,6 +98,7 @@ public class WeatherFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
         unbinder = ButterKnife.bind(this, view);
         writeTextViews();
+        setupUI();
         return view;
     }
 
@@ -125,5 +123,37 @@ public class WeatherFragment extends Fragment {
         pressure.setText(location.getPresure());
         minTemp.setText(location.getMinTemp());
         maxTemp.setText(location.getMaxTemp());
+    }
+
+    private void setupUI() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+        forecastRecyclerView.setLayoutManager(linearLayoutManager);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                forecastRecyclerView.getContext(),
+                linearLayoutManager.getOrientation()
+        );
+        forecastRecyclerView.addItemDecoration(dividerItemDecoration);
+        Forecast loadingForecast = new Forecast();
+        loadingForecast.setId(UUID.randomUUID().toString());
+        loadingForecast.setForecastDays(getLoadingForecastList());
+        forecastAdapter = new ForecastAdapter(loadingForecast,WeatherFragment.this);
+        forecastRecyclerView.setAdapter(forecastAdapter);
+    }
+
+    private List<ForecastDay> getLoadingForecastList() {
+        List<ForecastDay> forecastDays = new ArrayList<>();
+        TimeZone timezone = TimeZone.getTimeZone(location.getTimezone());
+        Calendar calendar = Calendar.getInstance(timezone);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for (int i=0; i<5; ++i) {
+            ForecastDay forecastDay = new ForecastDay();
+            if (i != 0) calendar.add(Calendar.DAY_OF_YEAR, 1);
+            String dateText = simpleDateFormat.format(calendar.getTime());
+            forecastDay.setDate(dateText);
+            forecastDay.setTemperature(getString(R.string.loading));
+            forecastDay.setIconId("-1");
+            forecastDays.add(forecastDay);
+        }
+        return forecastDays;
     }
 }

@@ -37,7 +37,9 @@ public class WeatherIconConverter {
                 }
             case '9':
                 return res.getString(R.string.wi_strong_wind);
+            case '-':
+                return res.getString(R.string.wi_refresh);
         }
-        return res.getString(R.string.wi_alien);
+        return res.getString(R.string.wi_na);
     }
 }

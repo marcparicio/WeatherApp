@@ -32,9 +32,10 @@ public class ForecastHolder extends RecyclerView.ViewHolder{
     }
 
     public void bindForecast(String temperature, String iconId, String date) {
-        temperatureTextView.setText(temperature + " °C");
-        dateTextView.setText(OpenWeatherForecastOffset.getDayOfWeek(date));
         Resources res = view.getResources();
+        if (temperature.equals(res.getString(R.string.loading))) temperatureTextView.setText(res.getString(R.string.loading));
+        else temperatureTextView.setText(temperature + " °C");
+        dateTextView.setText(OpenWeatherForecastOffset.getDayOfWeek(date));
         iconTextView.setText(WeatherIconConverter.fromCodeToIcon(iconId, res));
     }
 

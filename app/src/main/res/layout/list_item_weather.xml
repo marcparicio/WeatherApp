@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:padding="4dp"
+        android:padding="10dp"
         android:layout_marginRight="10dp"
         android:textSize="30dp" />
 
@@ -21,14 +21,14 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:padding="4dp"
+        android:padding="10dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/list_item_weather_city_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="4dp"
+        android:padding="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 
     <TextClock
@@ -36,6 +36,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/list_item_weather_city_name"
-        android:padding="4dp"
+        android:padding="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
 </RelativeLayout>

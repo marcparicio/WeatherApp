@@ -6,7 +6,7 @@ public class Forecast {
 
     private String id;
 
-    private List<ForecastDay> forecastDays = null;
+    private List<ForecastDay> forecastDays;
 
     public String getId() {
         return id;

@@ -17,5 +17,9 @@
         <item name="android:background">@color/ultra_light_blue</item>
     </style>
 
+    <style name="SerifBoldFont" parent="@android:style/TextAppearance.Medium">
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
 </resources>

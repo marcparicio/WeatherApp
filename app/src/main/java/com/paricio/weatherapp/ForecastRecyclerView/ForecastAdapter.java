@@ -22,6 +22,7 @@ public class ForecastAdapter extends RecyclerView.Adapter<ForecastHolder>  {
     public ForecastAdapter(Forecast forecast, WeatherFragment fragment) {
         this.forecastDays = forecast.getForecastDays();
         this.fragment = fragment;
+
         weatherFont = Typeface.createFromAsset(fragment.getActivity().getAssets(), "fonts/weather.ttf");
     }
 

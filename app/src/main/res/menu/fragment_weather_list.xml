@@ -6,4 +6,16 @@
         android:icon="@android:drawable/ic_menu_add"
         android:title="@string/new_location"
         app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/menu_item_settings"
+        android:title="@string/settings">
+        <item
+            android:id="@+id/menu_item_alarm_time"
+            android:title="@string/alarm_time"
+            android:text="@string/alarm_time"/>
+        <item
+            android:id="@+id/menu_item_about"
+            android:title="@string/about"
+            android:text="@string/about"/>
+    </item>
 </menu>

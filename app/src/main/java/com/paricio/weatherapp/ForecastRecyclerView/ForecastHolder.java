@@ -5,6 +5,8 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.paricio.weatherapp.R;
@@ -36,7 +38,14 @@ public class ForecastHolder extends RecyclerView.ViewHolder{
         if (temperature.equals(res.getString(R.string.loading))) temperatureTextView.setText(res.getString(R.string.loading));
         else temperatureTextView.setText(temperature + " °C");
         dateTextView.setText(OpenWeatherForecastOffset.getDayOfWeek(date));
-        iconTextView.setText(WeatherIconConverter.fromCodeToIcon(iconId, res));
+        String icon = WeatherIconConverter.fromCodeToIcon(iconId, res);
+        iconTextView.setText(icon);
+
+        if (icon.equals(res.getString(R.string.wi_refresh))) {
+            Animation rotation = AnimationUtils.loadAnimation(view.getContext(), R.anim.rotate);
+            rotation.setFillAfter(true);
+            iconTextView.startAnimation(rotation);
+        }
     }
 
 }

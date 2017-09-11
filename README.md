@@ -4,9 +4,8 @@ First version
 
 Upcoming features: 
 
-	- 5 day forecast of every location
-	- Notification option of a location's weather
-	- UI improvement + 
+	- Daily notification of a location's weather
+	- Sun/Moon animation depending on time
 
 (To use the app it is necessary to add a resource file called API_KEYS.xml with the following api keys:
 

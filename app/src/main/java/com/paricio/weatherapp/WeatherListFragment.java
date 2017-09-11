@@ -28,6 +28,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.paricio.weatherapp.DialogFragment.AboutDialogFragment;
 import com.paricio.weatherapp.ItemTouchHelper.SimpleItemTouchHelperCallback;
 import com.paricio.weatherapp.Model.Location;
 import com.paricio.weatherapp.Services.WeatherDataDownloader;
@@ -97,6 +98,12 @@ public class WeatherListFragment extends Fragment {
         switch (menuItem.getItemId()) {
             case R.id.menu_item_new_location:
                 callPlaceAutocompleteActivityIntent();
+                return true;
+            case R.id.menu_item_alarm_time:
+                alarmNotificationSettings();
+                return true;
+            case R.id.menu_item_about:
+                showAboutDialog();
         }
         return true;
     }
@@ -195,6 +202,15 @@ public class WeatherListFragment extends Fragment {
             e.printStackTrace();
         }
 
+    }
+
+    private void alarmNotificationSettings() {
+
+    }
+
+    private void showAboutDialog() {
+        AboutDialogFragment aboutDialogFragment = new AboutDialogFragment();
+        aboutDialogFragment.show(getFragmentManager(),"dialog");
     }
 
 

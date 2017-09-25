@@ -29,6 +29,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.paricio.weatherapp.DialogFragment.AboutDialogFragment;
+import com.paricio.weatherapp.DialogFragment.AlarmDialogFragment;
 import com.paricio.weatherapp.ItemTouchHelper.SimpleItemTouchHelperCallback;
 import com.paricio.weatherapp.Model.Location;
 import com.paricio.weatherapp.Services.WeatherDataDownloader;
@@ -205,7 +206,8 @@ public class WeatherListFragment extends Fragment {
     }
 
     private void alarmNotificationSettings() {
-
+        AlarmDialogFragment alarmDialogFragment = new AlarmDialogFragment();
+        alarmDialogFragment.show(getFragmentManager(),"dialog");
     }
 
     private void showAboutDialog() {

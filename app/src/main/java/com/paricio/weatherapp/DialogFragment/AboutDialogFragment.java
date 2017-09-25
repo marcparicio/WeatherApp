@@ -10,6 +10,7 @@ import android.widget.Button;
 import com.paricio.weatherapp.R;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class AboutDialogFragment extends DialogFragment {
 
@@ -23,14 +24,14 @@ public class AboutDialogFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.about_dialog, container, false);
-        okButton = (Button)v.findViewById(R.id.about_button);
+        View view = inflater.inflate(R.layout.about_dialog, container, false);
+        ButterKnife.bind(this,view);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dismiss();
             }
         });
-        return v;
+        return view;
     }
 }

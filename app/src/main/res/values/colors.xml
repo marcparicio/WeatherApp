@@ -2,18 +2,18 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#31eca3</color>
     <color name="blue">#2d5fdf</color>
-    <color name="dark_blue">#27297c</color>
-    <color name="light_blue">#cbf2fa</color>
-    <color name="ultra_light_blue">#d9f3f9</color>
+    <color name="light_blue">#d9f3f9</color>
+    <color name="ultra_light_blue">#ddf2f7</color>
     <color name="green">#31eca3</color>
     <color name="weather_background">#D1F7FF</color>
-
-    <color name="bright_sun">#fcfcb7</color>
-    <color name="bright_moon">#efefef</color>
-    <color name="blue_sky">#1e7ac7</color>
-    <color name="sunset_sky">#ec8100</color>
-    <color name="night_sky">#05192e</color>
+    <color name="soft_blue">#235ab7</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
     <color name="sea">#224869</color>
+    <color name="sun_yellow">#fafaa2</color>
+    <color name="sun_orange">#f4b067</color>
+    <color name="gray">#c9c9c9</color>
+
 </resources>

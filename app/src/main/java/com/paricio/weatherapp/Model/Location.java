@@ -128,5 +128,6 @@ public class Location {
     public void setMaxTemp(String maxTemp) {
         this.maxTemp = maxTemp;
     }
+
 }
 

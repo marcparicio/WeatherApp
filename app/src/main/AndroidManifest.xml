@@ -28,7 +28,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
-
+        <receiver android:name=".NotificationReceiver"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_geo_key"/>

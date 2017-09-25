@@ -2,12 +2,12 @@
 
 First version
 
-Upcoming features: 
+Upcoming changes: 
 
-	- Daily notification of a location's weather
-	- Sun/Moon animation depending on time
+	- Landscape layout
+	- UI changes
 
-(To use the app it is necessary to add a resource file called API_KEYS.xml with the following api keys:
+(To test the app it is necessary to add a resource file called API_KEYS.xml with the following api keys:
 
 	- OpenWeatherMap API
 	- Google Time Zone API

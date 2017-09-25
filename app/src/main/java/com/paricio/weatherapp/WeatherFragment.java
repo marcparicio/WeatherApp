@@ -3,6 +3,8 @@ package com.paricio.weatherapp;
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -21,12 +23,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnticipateInterpolator;
 import android.widget.TextClock;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -58,11 +64,6 @@ public class WeatherFragment extends Fragment {
 
     private static final String TAG = "WeatherFragment";
     private static final String EXTRA_LOCATION = "com.paricio.weatherapp.location";
-    private static final String EXTRA_FORECAST = "com.paricio.weatherapp.forecast";
-    private static final int COLOR_YELLOW = 0;
-    private static final int COLOR_WHITE = 1;
-
-
 
     @BindView(R.id.weather_city_name)
     TextView name;
@@ -84,27 +85,17 @@ public class WeatherFragment extends Fragment {
     TextView maxTemp;
     @BindView(R.id.forecast_recycler_view)
     RecyclerView forecastRecyclerView;
-    @BindView(R.id.sun)
-    View sunView;
-    @BindView(R.id.sky)
-    View skyView;
-    View sceneView;
     private Unbinder unbinder;
     private ForecastAdapter forecastAdapter;
     private Location location;
     private ForecastDataDownloader dataDownloader;
-    @BindColor(R.color.blue_sky)
-    int blueSkyColor;
-    @BindColor(R.color.sunset_sky)
-    int sunsetSkyColor;
-    @BindColor(R.color.night_sky)
-    int nightSkyColor;
 
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         dataDownloader = new ForecastDataDownloader();
         dataDownloader.setDataDownloadListener(new ForecastDataDownloader.DataDownloadListener() {
             @Override
@@ -124,113 +115,50 @@ public class WeatherFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
-        sceneView = view;
         unbinder = ButterKnife.bind(this, view);
         writeTextViews();
         setupUI();
 
-        sceneView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startAnimation();
-            }
-        });
-
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.fragment_weather, menu);
+        SharedPreferences settings = getContext().getSharedPreferences(getString(R.string.notification_file_key), Context.MODE_PRIVATE);
+        String checkedLocation = settings.getString(getString(R.string.checked_location), null);
+        MenuItem item = menu.findItem(R.id.action_check);
+        if (checkedLocation !=null && checkedLocation.equals(location.getId())) {
+            item.setChecked(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_check) {
+            SharedPreferences settings = getContext().getSharedPreferences(getString(R.string.notification_file_key), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            item.setChecked(!item.isChecked());
+            if (item.isChecked()) {
+                editor.putString(getString(R.string.checked_location), location.getId());
+                editor.commit();
+                Toast.makeText(getContext(),"Notifications activated on: " + location.getName(),Toast.LENGTH_SHORT).show();
+                return true;
+            }
+            else {
+                editor.remove(getString(R.string.checked_location));
+                editor.commit();
+                Toast.makeText(getContext(),"Notifications disabled on: " + location.getName(),Toast.LENGTH_SHORT).show();
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-    }
-
-    private void startAnimation() {
-        int locationTime = getLocationTime();
-        int sunColor = getSunColor(locationTime);
-        setSunColor(sunColor); //TODO
-        float sunYStart = getSunYStartPosition();
-        float sunXStart = getSunXStartPosition();
-        boolean isGoingUp = checkSunIsGoingUp(locationTime);
-        float sunYEnd = getSunYEndPosition(locationTime, isGoingUp);
-        float sunXEnd = getSunXEndPosition(locationTime);
-        ObjectAnimator widthAnimator = ObjectAnimator
-                .ofFloat(sunView, "x", sunXStart, sunXEnd)
-                .setDuration(3000);
-        widthAnimator.setInterpolator(new AccelerateInterpolator());
-
-        if (isGoingUp) {
-            ObjectAnimator heightAnimator = ObjectAnimator
-                    .ofFloat(sunView, "y", sunYStart, sunYEnd)
-                    .setDuration(3000);
-            heightAnimator.setInterpolator(new AccelerateInterpolator());
-
-            heightAnimator.start();
-            widthAnimator.start();
-        }
-        else {
-            ObjectAnimator heightAnimator = ObjectAnimator
-                    .ofFloat(sunView, "y", sunYStart, getSunYTop())
-                    .setDuration(1500);
-            heightAnimator.setInterpolator(new AccelerateInterpolator());
-            ObjectAnimator heightDownAnimator = ObjectAnimator
-                    .ofFloat(sunView, "y", getSunYTop(), sunYEnd)
-                    .setDuration(1500);
-            widthAnimator.setInterpolator(new AccelerateInterpolator());
-
-            AnimatorSet animatorSet = new AnimatorSet();
-            animatorSet
-                    .play(heightAnimator)
-                    .with(widthAnimator);
-            animatorSet.start();
-        }
-    }
-
-    private int getSunYTop() {
-        return skyView.getHeight()/2;
-    }
-
-    private boolean checkSunIsGoingUp(int time) {
-        return time <= 12;
-    }
-
-    private float getSunYStartPosition() {
-        return skyView.getBottom();
-    }
-
-    private float getSunXStartPosition() {
-        return skyView.getLeft();
-    }
-
-    private float getSunYEndPosition(int time, boolean isGoingUp) {
-        float hourValue = getSunYTop()/12;
-        if (isGoingUp) return  (skyView.getBottom()+(hourValue*time));
-        else return (skyView.getBottom()+(getSunYTop()-(hourValue*time)));
-    }
-
-    private float getSunXEndPosition(int time) {
-        float hourValue = skyView.getWidth()/24;
-        return (skyView.getLeft()+(hourValue*time));
-    }
-
-    private int getSunColor(int locationTime) {
-        if (locationTime >= 5 && locationTime < 22) return COLOR_YELLOW;
-        else return COLOR_WHITE;
-    }
-    private int getLocationTime() {
-        TimeZone timezone = TimeZone.getTimeZone(location.getTimezone());
-        Calendar locationCalendar = Calendar.getInstance(timezone);
-        return locationCalendar.get(Calendar.HOUR_OF_DAY);
-    }
-
-    private void setSunColor(int colorCode) {
-        int color;
-        if (colorCode == COLOR_WHITE) color = ContextCompat.getColor(getContext(),R.color.bright_sun);
-        else color = ContextCompat.getColor(getContext(),R.color.bright_moon);
-        Drawable myIcon = ContextCompat.getDrawable(getContext(), R.drawable.sun);
-        ColorFilter filter = new LightingColorFilter(color, color);
-        myIcon.setColorFilter(filter);
-        sunView.setBackground(myIcon);
     }
 
     private void writeTextViews() {

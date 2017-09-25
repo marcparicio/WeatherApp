@@ -13,7 +13,7 @@
         android:layout_alignParentRight="true"
         android:padding="10dp"
         android:layout_marginRight="10dp"
-        android:textSize="30dp" />
+        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/list_item_weather_temperature"

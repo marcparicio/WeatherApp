@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/notification_appicon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:contentDescription="AppIcon"
+        android:src="@mipmap/weather_icon_launcher"/>
+
+    <TextView
+        android:id="@+id/notification_title"
+        android:layout_width="wrap_content"
+        android:paddingBottom="5dp"
+        android:textStyle="bold"
+        android:textAppearance="@style/NotificationStyle"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/notification_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:paddingRight="10dp"
+        android:textAppearance="@style/NotificationStyle"
+        android:layout_below="@id/notification_appicon"/>
+
+    <TextView
+        android:id="@+id/notification_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/NotificationStyle"
+        android:layout_below="@id/notification_appicon"
+        android:layout_toRightOf="@+id/notification_temperature" />
+
+    <ImageView
+        android:id="@+id/notification_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/notification_title"
+        android:layout_toRightOf="@id/notification_description" />
+
+</RelativeLayout>

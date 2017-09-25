@@ -20,11 +20,11 @@ I've applied the MVC pattern to develop the application, and there's a list of s
 
 Here are some snapshots of the application:
 
+<img src="./images/WeatherList.png" alt="WeatherList" style="width: 400px;"/>
+
+<img src="./images/WeatherLocation.png" alt="WeatherLocation" style="width: 400px;"/>
+
+<img src="./images/WeatherAlarm.png" alt="WeatherAlarm" style="width: 400px;"/>
+
+<img src="./images/WeatherNotification.png" alt="WeatherNotification" style="width: 400px;"/>
 	
-![WeatherList](./images/WeatherList.png)
-
-![WeatherLocation](./images/WeatherLocation.png)
-
-![WeatherAlarm](./images/WeatherAlarm.png)
-
-![WeatherNotification](./images/WeatherNotification.png)	 

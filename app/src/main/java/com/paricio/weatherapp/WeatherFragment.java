@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -179,7 +180,12 @@ public class WeatherFragment extends Fragment {
     }
 
     private void setupUI() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+        int orientation;
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            orientation = LinearLayoutManager.HORIZONTAL;
+        }
+        else orientation = LinearLayoutManager.VERTICAL;
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),orientation,false);
         forecastRecyclerView.setLayoutManager(linearLayoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 forecastRecyclerView.getContext(),

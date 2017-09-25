@@ -68,9 +68,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Log.i(TAG, "Popping up notification...");
 
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(),
-                R.layout.custom_notification);
-
         NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.weather_icon_launcher)
                 .setSound(alarmSound)
